@@ -1,0 +1,15 @@
+mysqlclient
+sqlalchemy
+uvicorn
+fastapi
+pymysql
+FastAPI-SQLAlchemy==0.2.1
+fastapi-pagination==0.11.2
+pytz
+pandas
+sqlalchemy-utils
+pyjwt==2.4.0
+shortuuid==1.0.11
+passlib
+faker
+mangum

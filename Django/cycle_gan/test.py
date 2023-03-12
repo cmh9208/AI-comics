@@ -29,8 +29,8 @@ if cuda:
     G_BA.cuda()
 
 # Load state dicts
-checkpoint_G_AB = torch.load(r"C:\MyProject\Django\cycle_gan\checkpoint_train\toon\G_AB_4.pth.tar")
-checkpoint_G_BA = torch.load(r"C:\MyProject\Django\cycle_gan\checkpoint_train\toon\G_BA_4.pth.tar")
+checkpoint_G_AB = torch.load(r"C:\MyProject\Django\cycle_gan\checkpoint_train\toon\G_AB_5.pth.tar")
+checkpoint_G_BA = torch.load(r"C:\MyProject\Django\cycle_gan\checkpoint_train\toon\G_BA_5.pth.tar")
 G_AB.load_state_dict(checkpoint_G_AB['state_dict'])
 G_BA.load_state_dict(checkpoint_G_BA['state_dict'])
 
