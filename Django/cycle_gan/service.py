@@ -71,7 +71,7 @@ def create_fake_image(img):
     G_AB = GeneratorResNet(input_shape, n_residual_blocks)
     G_AB.cuda()
 
-    checkpoint_G_AB = torch.load(r"C:\MyProject\Django\cycle_gan\checkpoint_train_more\toon\G_AB_5.pth.tar")
+    checkpoint_G_AB = torch.load(r"C:\MyProject\Django\cycle_gan\checkpoint_train_more\toon\G_AB_5.toon.tar")
     G_AB.load_state_dict(checkpoint_G_AB['state_dict'])
     G_AB.eval()
 

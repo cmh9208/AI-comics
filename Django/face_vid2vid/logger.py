@@ -42,7 +42,7 @@ class Logger:
     def save_cpk(self, emergent=False):
         cpk = {k: v.state_dict() for k, v in self.models.items()}
         cpk['epoch'] = self.epoch
-        cpk_path = os.path.join(self.cpk_dir, '%s-checkpoint.pth.tar' % str(self.epoch).zfill(self.zfill_num)) 
+        cpk_path = os.path.join(self.cpk_dir, '%s-checkpoint.toon.tar' % str(self.epoch).zfill(self.zfill_num))
         if not (os.path.exists(cpk_path) and emergent):
             torch.save(cpk, cpk_path)
 

@@ -482,7 +482,7 @@ for epoch in range(init_epoch, n_epochs):
 
     # (20) 모델 가중치를 저장함
     if checkpoint_interval != -1 and epoch % checkpoint_interval == 0:
-        torch.save(G_AB.state_dict(), "checkpoint_reference/%s/G_AB_%d.pth" % (dataset_name, epoch))
-        torch.save(G_BA.state_dict(), "checkpoint_reference/%s/G_BA_%d.pth" % (dataset_name, epoch))
-        torch.save(D_A.state_dict(), "checkpoint_reference/%s/D_A_%d.pth" % (dataset_name, epoch))
-        torch.save(D_B.state_dict(), "checkpoint_reference/%s/D_B_%d.pth" % (dataset_name, epoch))
+        torch.save(G_AB.state_dict(), "checkpoint_reference/%s/G_AB_%d.toon" % (dataset_name, epoch))
+        torch.save(G_BA.state_dict(), "checkpoint_reference/%s/G_BA_%d.toon" % (dataset_name, epoch))
+        torch.save(D_A.state_dict(), "checkpoint_reference/%s/D_A_%d.toon" % (dataset_name, epoch))
+        torch.save(D_B.state_dict(), "checkpoint_reference/%s/D_B_%d.toon" % (dataset_name, epoch))

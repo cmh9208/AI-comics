@@ -82,7 +82,7 @@ def create_fake_image(img):
     G_AB = GeneratorResNet(input_shape, n_residual_blocks)
     G_AB.cuda()
 
-    checkpoint_G_AB = torch.load(r"C:\MyProject\Django\cycle_gan\checkpoint_train\toon\G_AB_142.pth.tar")
+    checkpoint_G_AB = torch.load(r"C:\MyProject\Django\cycle_gan\checkpoint_train\toon\G_AB_142.toon.tar")
     G_AB.load_state_dict(checkpoint_G_AB['state_dict'])
     G_AB.eval()
 
@@ -278,7 +278,7 @@ def find_best_frame(source, driving, cpu=False):
 def face_vid_parser():
     parser = ArgumentParser()
     parser.add_argument("--config", default='face_vid2vid/config/vox-256.yaml', help="path to config")
-    parser.add_argument("--checkpoint", default='face_vid2vid/checkpoint/00000189-checkpoint.pth.tar',
+    parser.add_argument("--checkpoint", default='face_vid2vid/checkpoint/00000189-checkpoint.toon.tar',
                         help="path to checkpoint to restore")
 
     parser.add_argument("--source_image", default='face_vid2vid/asset/source/0.png', help="path to source image")

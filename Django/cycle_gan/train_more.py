@@ -84,10 +84,10 @@ optimizer_D_B = torch.optim.Adam(D_B.parameters(), lr=lr, betas=(b1, b2))
 
 #############################################################################
 # 모델과 옵티마이저가 모두 정의된 다음 중간 모델 정보로 치환함
-checkpoint_G_AB = torch.load(os.path.join(pth_root, "checkpoint_train", "toon", "G_AB_1.pth.tar"))
-checkpoint_G_BA = torch.load(os.path.join(pth_root, "checkpoint_train", "toon", "G_AB_1.pth.tar"))
-checkpoint_D_A = torch.load(os.path.join(pth_root, "checkpoint_train", "toon", "D_A_1.pth.tar"))
-checkpoint_D_B = torch.load(os.path.join(pth_root, "checkpoint_train", "toon", "D_B_1.pth.tar"))
+checkpoint_G_AB = torch.load(os.path.join(pth_root, "checkpoint_train", "toon", "G_AB_1.toon.tar"))
+checkpoint_G_BA = torch.load(os.path.join(pth_root, "checkpoint_train", "toon", "G_AB_1.toon.tar"))
+checkpoint_D_A = torch.load(os.path.join(pth_root, "checkpoint_train", "toon", "D_A_1.toon.tar"))
+checkpoint_D_B = torch.load(os.path.join(pth_root, "checkpoint_train", "toon", "D_B_1.toon.tar"))
 
 # 저장했던 중간 모델 정보로 모델 치환.
 G_AB.load_state_dict(checkpoint_G_AB['state_dict'])
@@ -291,21 +291,21 @@ if __name__ == '__main__':
             torch.save({'state_dict': G_AB.state_dict(),
                         'optimizer_state_dict': optimizer_G.state_dict(),
                         'epoch': epoch,
-                        }, "checkpoint_train_more/%s/G_AB_%d.pth.tar" % (dataset_name, epoch))
+                        }, "checkpoint_train_more/%s/G_AB_%d.toon.tar" % (dataset_name, epoch))
 
             torch.save({'state_dict': G_BA.state_dict(),
                         'optimizer_state_dict': optimizer_G.state_dict(),
                         'epoch': epoch,
-                        }, "checkpoint_train_more/%s/G_BA_%d.pth.tar" % (dataset_name, epoch))
+                        }, "checkpoint_train_more/%s/G_BA_%d.toon.tar" % (dataset_name, epoch))
 
             torch.save({'state_dict': D_A.state_dict(),
                         'optimizer_state_dict': optimizer_D_A.state_dict(),
                         'epoch': epoch,
-                        }, "checkpoint_train_more/%s/D_A_%d.pth.tar" % (dataset_name, epoch))
+                        }, "checkpoint_train_more/%s/D_A_%d.toon.tar" % (dataset_name, epoch))
 
             torch.save({'state_dict': D_B.state_dict(),
                         'optimizer_state_dict': optimizer_D_B.state_dict(),
                         'epoch': epoch,
-                        }, "checkpoint_train_more/%s/D_B_%d.pth.tar" % (dataset_name, epoch))
+                        }, "checkpoint_train_more/%s/D_B_%d.toon.tar" % (dataset_name, epoch))
 
 

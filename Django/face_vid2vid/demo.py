@@ -239,7 +239,7 @@ def find_best_frame(source, driving, cpu=False):
 if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument("--config", default='config/vox-256.yaml', help="path to config")
-    parser.add_argument("--checkpoint", default='checkpoint/00000189-checkpoint.pth.tar', help="path to checkpoint to restore")
+    parser.add_argument("--checkpoint", default='checkpoint/00000189-checkpoint.toon.tar', help="path to checkpoint to restore")
 
     parser.add_argument("--source_image", default='asset/source/0.png', help="path to source image")
     parser.add_argument("--driving_video", default='asset/driving/2.mp4', help="path to driving video")

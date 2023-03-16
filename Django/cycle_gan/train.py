@@ -270,21 +270,21 @@ if __name__ == '__main__':
             torch.save({'state_dict': G_AB.state_dict(),
                         'optimizer_state_dict': optimizer_G.state_dict(),
                         'epoch': epoch,
-                        }, "checkpoint_train/%s/G_AB_%d.pth.tar" % (dataset_name, epoch))
+                        }, "checkpoint_train/%s/G_AB_%d.toon.tar" % (dataset_name, epoch))
 
             torch.save({'state_dict': G_BA.state_dict(),
                         'optimizer_state_dict': optimizer_G.state_dict(),
                         'epoch': epoch,
-                        }, "checkpoint_train/%s/G_BA_%d.pth.tar" % (dataset_name, epoch))
+                        }, "checkpoint_train/%s/G_BA_%d.toon.tar" % (dataset_name, epoch))
 
             torch.save({'state_dict': D_A.state_dict(),
                         'optimizer_state_dict': optimizer_D_A.state_dict(),
                         'epoch': epoch,
-                        }, "checkpoint_train/%s/D_A_%d.pth.tar" % (dataset_name, epoch))
+                        }, "checkpoint_train/%s/D_A_%d.toon.tar" % (dataset_name, epoch))
 
             torch.save({'state_dict': D_B.state_dict(),
                         'optimizer_state_dict': optimizer_D_B.state_dict(),
                         'epoch': epoch,
-                        }, "checkpoint_train/%s/D_B_%d.pth.tar" % (dataset_name, epoch))
+                        }, "checkpoint_train/%s/D_B_%d.toon.tar" % (dataset_name, epoch))
 
 

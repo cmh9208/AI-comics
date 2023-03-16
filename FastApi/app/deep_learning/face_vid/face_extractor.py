@@ -18,7 +18,7 @@ def get_landmarks(image):
         yield face_landmarks
 
 
-def image_align(src_file, face_landmarks, output_size=256, transform_size=4096, enable_padding=True):
+def image_align(src_file, face_landmarks, output_size=512, transform_size=4096, enable_padding=True):
         lm = np.array(face_landmarks)
         lm_eye_left      = lm[36 : 42]  # left-clockwise
         lm_eye_right     = lm[42 : 48]  # left-clockwise

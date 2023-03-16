@@ -1,11 +1,13 @@
+import 'package:ai_comics/comics_making/screen/making_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ai_comics/main_page/component/kakao_login.dart';
-import 'package:ai_comics/main_page/component/main_view_model.dart';
+import 'package:ai_comics/main_page/model/main_view_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ai_comics/main_page/component/swipe_image.dart';
+import 'package:ai_comics/photo_conversion_page/screen/conversion_screen.dart';
 
 class Home extends StatelessWidget {
-  const Home({super.key});
+  const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -43,20 +45,39 @@ class _MyHomePageState extends State<MyHomePage> {
             color: Colors.black.withOpacity(0.5),
             width: MediaQuery.of(context).size.width,
             height: 80,
-              child: Align(
-                alignment: Alignment.bottomLeft,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.bottomLeft,
                   child: Padding(
-                  padding: EdgeInsets.only(left: 5.0), // 아래에서 5, 왼쪽에서 2 띄움
-                  child: Text(
+                    padding: EdgeInsets.only(left: 15.0),
+                    child: Text(
                       widget.title,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                      fontSize: 20.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    )
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Padding(
+                    padding: EdgeInsets.only(right: 15.0),
+                    child: Text(
+                      'HOME',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
 
@@ -73,22 +94,36 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: StreamBuilder<User?>(
                         stream: FirebaseAuth.instance.authStateChanges(),
                         builder: (context, snapshot) {
+
                           //만약 로그아웃 상태라면 로그인 버튼을 보여줌
                           if (!snapshot.hasData) {
-                            return ElevatedButton(
-                              onPressed: () async {
-                                await viewModel.login();
-                                setState(() {});
-                              },
-                              style: ElevatedButton.styleFrom(
-                                padding: EdgeInsets.zero,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(0),
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    await viewModel.login();
+                                    setState(() {});
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    padding: EdgeInsets.zero,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(0),
+                                    ),
+                                    primary: Colors.transparent,
+                                    shadowColor: Colors.transparent,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text('카카오 계정으로 로그인 합니다'),
+                                      ),
+                                      Image.asset('assets/images/button/kakao_login_medium_narrow.png'),
+                                    ],
+                                  ),
                                 ),
-                                primary: Colors.transparent,
-                                shadowColor: Colors.transparent,
-                              ),
-                              child: Image.asset('assets/images/button/kakao_login_medium_narrow.png'),
+                              ],
                             );
                           }
                           return Column(
@@ -99,12 +134,10 @@ class _MyHomePageState extends State<MyHomePage> {
                                 children: [
                                   // 하단 왼쪽 버튼
                                   Padding(
-                                    padding: EdgeInsets.only(right: 20),
+                                    padding: EdgeInsets.only(right: 30),
                                     child: Column(
                                       children: [
-                                        Container(
-                                          width: 100,
-                                          child: ElevatedButton(
+                                          ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.transparent,
                                               shape: RoundedRectangleBorder(
@@ -113,14 +146,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                               ),
                                             ),
                                             onPressed: () {
-                                              // 버튼을 클릭할 때 실행되는 코드를 여기에 작성합니다.
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => ConversionScreen()),
+                                              );
                                             },
                                             child: Text('사진변환'),
                                           ),
-                                        ),
-                                        Container(
-                                          width: 100,
-                                          child: ElevatedButton(
+                                          ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.transparent,
                                               shape: RoundedRectangleBorder(
@@ -131,9 +164,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                             onPressed: () {
                                               // 버튼을 클릭할 때 실행되는 코드를 여기에 작성합니다.
                                             },
-                                            child: Text('만화제작'),
+                                            child: Text('만화감상'),
                                           ),
-                                        ),
                                       ],
                                     ),
                                   ),
@@ -165,12 +197,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                   // 하단 우측 버튼
                                   Padding(
-                                    padding: EdgeInsets.only(left: 20),
+                                    padding: EdgeInsets.only(left: 30),
                                     child: Column(
                                       children: [
-                                        Container(
-                                          width: 100,
-                                          child: ElevatedButton(
+                                          ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.transparent,
                                               shape: RoundedRectangleBorder(
@@ -179,14 +209,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                               ),
                                             ),
                                             onPressed: () {
-                                              // 버튼을 클릭할 때 실행되는 코드를 여기에 작성합니다.
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => MakingScreen()),
+                                              );
                                             },
-                                            child: Text('만화감상'),
+                                            child: Text('만화제작'),
                                           ),
-                                        ),
-                                        Container(
-                                          width: 100,
-                                          child: ElevatedButton(
+                                          ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                               backgroundColor: Colors.transparent,
                                               shape: RoundedRectangleBorder(
@@ -200,7 +230,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                             },
                                             child: Text('로그아웃'),
                                           ),
-                                        ),
                                       ],
                                     ),
                                 ),

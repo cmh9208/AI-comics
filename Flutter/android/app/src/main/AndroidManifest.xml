@@ -1,9 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ai_comics">
+    <!-- 앱이 외부 저장소에 쓰기 권한을 요청하는 코드(이미지를 갤러리에 저장) -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
    <application
         android:label="ai_comics"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true">
 
        <!-- 카카오 로그인 커스텀 URL 스킴 설정 -->
        <activity

@@ -67,7 +67,7 @@ def create_fake_image(img):
     G_AB = GeneratorResNet(input_shape, n_residual_blocks)
     G_AB.cuda()
 
-    checkpoint_G_AB = torch.load("./cycle_gan/pth/G_AB_5.pth.tar")
+    checkpoint_G_AB = torch.load("./cycle_gan/pth/G_AB_8.pth.tar")
     G_AB.load_state_dict(checkpoint_G_AB['state_dict'])
     G_AB.eval()
 
@@ -75,7 +75,7 @@ def create_fake_image(img):
         real_A = Variable(define_tensor(img).copy_(batch))
         fake_B = 0.5 * (G_AB(real_A).data + 1.0)
 
-        file_name = img[img.rfind('/') + 1:] # img 경로의 마지막 파일명만 가져오기
+        file_name = img[img.rfind('/') + 1:] # images 경로의 마지막 파일명만 가져오기
 
         save_image(fake_B, "./result_gan_vid/fake_%s" % file_name)
         img = imageio.v2.imread("./result_gan_vid/fake_%s" % file_name)
@@ -262,7 +262,7 @@ def face_vid_parser():
     parser.add_argument("--checkpoint", default='./face_vid/pth/00000189-checkpoint.pth.tar',
                         help="path to checkpoint to restore")
 
-    parser.add_argument("--driving_video", default='./face_vid/video_sauce/5.mp4', help="path to driving video")
+    parser.add_argument("--driving_video", default='./face_vid/video_sauce/1515.mp4', help="path to driving video")
 
     parser.add_argument("--relative", dest="relative", action="store_true",
                         help="use relative or absolute keypoint coordinates")
@@ -292,9 +292,9 @@ def face_vid_parser():
 def create_fake_img_and_vid(img):
     create_repository()
     file_name = img[img.rfind('/') + 1:]
-    # 할일 : 여기에 얼굴 인식해서 256으로 잘라 내주는 코드 작성하기
-    img = face_extractor(img)
-    img = create_fake_image(img)
+
+    img = face_extractor(img) # 추출된 이미지는 512px
+    img = create_fake_image(img) # 현재
 
     opt = face_vid_parser()
     source_image = img
@@ -308,7 +308,7 @@ def create_fake_img_and_vid(img):
         pass
     reader.close()
 
-    source_image = resize(source_image, (256, 256))[..., :3]
+    source_image = resize(source_image, (256, 256))[..., :3] # 512 이미지를 리사이즈 하여 input
     driving_video = [resize(frame, (256, 256))[..., :3] for frame in driving_video]
     generator, kp_detector, he_estimator = load_checkpoints(config_path=opt.config, checkpoint_path=opt.checkpoint, cpu=opt.cpu)
 
@@ -354,7 +354,7 @@ def vid_size_and_resolution_up(frame):
 
 if __name__ == '__main__':
     remove_memory_cash()
-    img = "./user_image/image_6.jpeg.png"
-    create_fake_image(img)
-    # create_fake_img_and_vid(img)
-    # face_extractor(img)
+    img = "./user_image/test2 (3).jpg"
+    # create_fake_image(img)
+    create_fake_img_and_vid(img)
+    # face_extractor(images)

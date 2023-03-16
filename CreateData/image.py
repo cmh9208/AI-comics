@@ -51,5 +51,5 @@ def data_augmentation(images):
 
 
 if __name__ == '__main__':
-    images = glob.glob('data/Selfie-dataset/*.jpg')
+    images = glob.glob('data/ss/*.jpg')
     img_resize(images)
