@@ -1,0 +1,10 @@
+.container{
+    width: 400px;
+    text-align: center;
+    margin-top: 4rem;
+}
+.text h5{
+    margin-top: 0.5rem;
+    text-align: end ;
+    color: #5e5ee6;
+}

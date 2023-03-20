@@ -1,0 +1,57 @@
+.container {
+  margin: 20px;
+  padding:0;
+  width: 100vw;
+  height: 80px;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  color: rgb(0, 0, 0);
+  font-size: 20px;
+  }
+
+.header {
+  width: 80vw;
+  margin:0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.menus{
+  width: 35%;
+
+}
+
+.mainMenu {
+  list-style: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  color: rgb(0, 0, 0);
+}
+
+
+.loginMenu{
+  width: 10%;
+  display: flex;
+  justify-content: space-around;
+}
+.login{
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+}
+.login:hover{
+  text-decoration: underline ;
+  color: #6f77e9;
+}
+.register{
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+}
+.register:hover{
+  text-decoration: underline ;
+  color: #6f77e9;
+
+}

@@ -1,0 +1,10 @@
+.container{
+    max-width: 100vw;
+    min-height: 760px;
+    background-color: #eeebeb;
+    box-shadow: 2px 2px 5px 1px rgb(231, 223, 223) ;
+    opacity: 90%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
