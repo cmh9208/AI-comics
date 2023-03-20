@@ -25,7 +25,7 @@ const Introduce: React.FC = () => {
                         Skill={"TypeScript, Next.js, React.js, Spring"} 
                         Email={"jwj96895@gmail.com"} />
                     <IntroduceItem 
-                        ImgSrc={"https://avatars.githubusercontent.com/u/97998445?v=4"} 
+                        ImgSrc={"https://bucket-4cr3lx.s3.ap-northeast-2.amazonaws.com/%EC%A6%9D%EB%AA%85%EC%82%AC%EC%A7%84_%EC%B5%9C%EB%AF%BC%ED%98%B8.jpg"} 
                         Name={"Min-Hye Sim"}
                         LinkHref1={"https://github.com/MinhyeSim"} 
                         LinkHref2={"/"} 
@@ -33,24 +33,7 @@ const Introduce: React.FC = () => {
                         Role2={"챗봇(자연어 처리), 음성인식(STT/TTS)"} 
                         Skill={"NLP, Python"} 
                         Email={"smine0032@gmail.com"} />
-                    <IntroduceItem 
-                        ImgSrc={"https://avatars.githubusercontent.com/u/97998407?v=4"} 
-                        Name={"Ji-Hye Kim"}
-                        LinkHref1={"https://github.com/codejihyekim"} 
-                        LinkHref2={"/"} 
-                        Role={"AI Developer"} 
-                        Role2={"챗봇(자연어 처리)"} 
-                        Skill={"NLP, Python"} 
-                        Email={"wlgp03090@gmail.com"} />
-                    <IntroduceItem 
-                        ImgSrc={"https://avatars.githubusercontent.com/u/97512602?v=4"} 
-                        Name={"Gun-Il Choi"}
-                        LinkHref1={"https://github.com/nengcham"} 
-                        LinkHref2={"/"} 
-                        Role={"AI Developer"} 
-                        Role2={"GAN을 통한 가상휴먼 캐릭터 생성"} 
-                        Skill={"GAN, Python"} 
-                        Email={"cgi0104@gmail.com"} />
+                  
                 </div>
             </div>
         </section>

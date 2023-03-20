@@ -1,29 +1,9 @@
 version: "3.8"
 
 services:
-  db:
-    container_name: mydb
-    build: ./docker/mysql
-    restart: always
-    tty: true
-    environment:
-      MYSQL_DATABASE: mydb
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_ROOT_HOST: root
-    expose:
-      - '3306'
-    ports:
-      - "3306:3306"
-    volumes:
-      - ./docker/mysql/conf.d:/etc/mysql/conf.d
-      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
-
-    networks:
-      - local-net
 
   api:
-    links:
-      - db
+
     container_name: "api"
     build: ./docker/api
     ports:
@@ -32,6 +12,12 @@ services:
       - .:/app
     networks:
       - local-net
+    deploy:
+      resources:
+        limits:
+          memory: 8G
+        reservations:
+          memory: 4G
 networks:
   local-net:
     driver: bridge
