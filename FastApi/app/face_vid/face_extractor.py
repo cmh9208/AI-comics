@@ -102,6 +102,6 @@ def face_extractor(img):
         return img
 
 if __name__ == "__main__":
-    img = os.path.join("../user_image/kimgoeun.jpg")
+    img = os.path.join("user_image/kimgoeun.jpg")
     face_extractor(img)
 

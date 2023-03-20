@@ -12,13 +12,13 @@ from skimage.transform import resize
 from skimage import img_as_ubyte
 from scipy.spatial import ConvexHull
 import gc
-from app.deep_learning.cycle_gan.datasets import ImageDataset
-from app.deep_learning.cycle_gan.model import GeneratorResNet
-from app.deep_learning.face_vid.replicate import DataParallelWithCallback
-from app.deep_learning.face_vid.generator import OcclusionAwareSPADEGenerator
-from app.deep_learning.face_vid.keypoint_detector import KPDetector, HEEstimator
-from app.deep_learning.face_vid.animate import normalize_kp
-from app.deep_learning.face_vid.face_extractor import face_extractor
+from app.cycle_gan.datasets import ImageDataset
+from app.cycle_gan.model import GeneratorResNet
+from app.face_vid.replicate import DataParallelWithCallback
+from app.face_vid.generator import OcclusionAwareSPADEGenerator
+from app.face_vid.keypoint_detector import KPDetector, HEEstimator
+from app.face_vid.animate import normalize_kp
+from app.face_vid.face_extractor import face_extractor
 
 matplotlib.use('Agg')
 
@@ -52,8 +52,8 @@ def define_dataload(img):
     return dataloader
 
 def create_repository():
-    if not os.path.exists('./result_gan_vid'):
-        os.makedirs('./result_gan_vid')
+    if not os.path.exists('result_gan_vid'):
+        os.makedirs('result_gan_vid')
 
 def create_fake_image(img):
     create_repository()
@@ -83,7 +83,7 @@ def create_fake_image(img):
 
 def load_checkpoints(config_path, checkpoint_path, cpu=False):
     with open(config_path) as f:
-        config = yaml.load(f)
+        config = yaml.load(f, Loader=yaml.SafeLoader)
 
     generator = OcclusionAwareSPADEGenerator(**config['model_params']['generator_params'], **config['model_params']['common_params'])
 
@@ -262,7 +262,7 @@ def face_vid_parser():
     parser.add_argument("--checkpoint", default='./face_vid/pth/00000189-checkpoint.pth.tar',
                         help="path to checkpoint to restore")
 
-    parser.add_argument("--driving_video", default='./face_vid/video_sauce/1515.mp4', help="path to driving video")
+    parser.add_argument("--driving_video", default='./face_vid/video_sauce/15.mp4', help="path to driving video")
 
     parser.add_argument("--relative", dest="relative", action="store_true",
                         help="use relative or absolute keypoint coordinates")
@@ -294,7 +294,7 @@ def create_fake_img_and_vid(img):
     file_name = img[img.rfind('/') + 1:]
 
     img = face_extractor(img) # 추출된 이미지는 512px
-    img = create_fake_image(img) # 현재
+    img = create_fake_image(img)
 
     opt = face_vid_parser()
     source_image = img
@@ -313,7 +313,7 @@ def create_fake_img_and_vid(img):
     generator, kp_detector, he_estimator = load_checkpoints(config_path=opt.config, checkpoint_path=opt.checkpoint, cpu=opt.cpu)
 
     with open(opt.config) as f:
-        config = yaml.load(f)
+        config = yaml.load(f, Loader=yaml.SafeLoader)
     estimate_jacobian = config['model_params']['common_params']['estimate_jacobian']
     print(f'estimate jacobian: {estimate_jacobian}')
 
@@ -354,7 +354,5 @@ def vid_size_and_resolution_up(frame):
 
 if __name__ == '__main__':
     remove_memory_cash()
-    img = "./user_image/test2 (3).jpg"
-    # create_fake_image(img)
+    img = "./user_image/nayeon.jpg"
     create_fake_img_and_vid(img)
-    # face_extractor(images)

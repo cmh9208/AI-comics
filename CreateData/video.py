@@ -49,7 +49,7 @@ class DataPreprocessing(object):
 
         while (video.isOpened()):
             ret, image = video.read()
-            if (int(video.get(1)) % (fps*8) == 0):  # fps 한번이 1초가 됨
+            if (int(video.get(1)) % (fps*6) == 0):  # fps 한번이 1초가 됨
                 cv2.imwrite(video_path[:-4] + "/frame%d.jpg" % count, image)
                 print('Saved frame number :', str(int(video.get(1))))
                 count += 1
@@ -74,7 +74,7 @@ if __name__ == '__main__':
         key = input("메뉴선택: ")
         print("#" * 50)
 
-        video_path = "data/star.mp4"
+        video_path = "Chihiro_Totoro_Howl_Ponyo_Laputa.mp4"
 
         dp = DataPreprocessing(video_path)
         if key == "0":

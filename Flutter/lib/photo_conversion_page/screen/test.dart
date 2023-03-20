@@ -35,7 +35,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
     });
 
     Dio dio = Dio();
-    Response response = await dio.post('http://10.0.2.2:8000/image-upload', data: formData);
+    Response response = await dio.post('http://10.0.2.2:8000/gan_vid_service', data: formData);
 
     setState(() {
       _imageFile = null;
@@ -142,3 +142,4 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+// SoketException: connection refused (OS Eroor Connection refused error= 111.) address = localhost port =50114

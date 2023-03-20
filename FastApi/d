@@ -1,0 +1,59 @@
+# 메모리 제한 추가한 것
+pyyaml 이랑 호환이 안됨 pyyaml 안쓸꺼면 밑에꺼 두개 추가 설치해야함
+huggingface-hub==0.12.1
+transformers==4.26.1
+pyyaml==4.2b4
+
+가짜 이미지, 비디오 생성 시 gpu 메모리 4.1 까지 올라감
+888 x 700 가짜 이미지 생성 시 5.2 까지 올라감
+1393 x 1024 에서 쿠다 메모리 부족
+
+
+version: "3.8"
+
+services:
+  db:
+    container_name: mydb
+    build: ./docker/mysql
+    restart: always
+    tty: true
+    environment:
+      MYSQL_DATABASE: mydb
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_HOST: root
+    expose:
+      - '3306'
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker/mysql/conf.d:/etc/mysql/conf.d
+      - ./docker/mysql/initdb.d:/docker-entrypoint-initdb.d
+    networks:
+      - local-net
+
+  api:
+    links:
+      - db
+    container_name: "api"
+    build: ./docker/api
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    devices:
+      - /dev/nvidia0:/dev/nvidia0
+      - /dev/nvidiactl:/dev/nvidiactl
+    environment:
+      NVIDIA_VISIBLE_DEVICES: all
+    deploy:
+      resources:
+        limits:
+          memory: 8g
+        reservations:
+          memory: 4g
+    networks:
+      - local-net
+
+networks:
+  local-net:
+    driver: bridge
