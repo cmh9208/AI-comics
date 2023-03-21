@@ -61,3 +61,11 @@ services:
 networks:
   local-net:
     driver: bridge
+
+docker system prune --all --force
+
+apt-get install libgl1-mesa-glx
+
+python -m pip install --upgrade pip
+apt-get install --upgrade pip
+docker system prune --all --force

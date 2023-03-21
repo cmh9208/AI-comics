@@ -2,8 +2,9 @@ FROM python:3.9
 
 WORKDIR /app
 ADD requirements.txt .
-
+RUN apt-get update && apt-get install -y libgl1-mesa-glx # cv2 설치를 위한
 RUN pip install --trusted-host pypi.python.org -r requirements.txt
+RUN apt-get update && apt-get install -y libespeak1
 EXPOSE 8000
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 

@@ -1,5 +1,4 @@
-import os, sys, matplotlib, imageio, torch
-import cv2
+import os, matplotlib, imageio, torch
 import torchvision.transforms as transforms
 from torchvision.utils import save_image
 from torch.utils.data import DataLoader
@@ -7,8 +6,8 @@ from torch.autograd import Variable
 from PIL import Image
 
 import gc
-from app.cycle_gan.datasets import ImageDataset
-from app.cycle_gan.model import GeneratorResNet
+from .cycle_gan.datasets import ImageDataset
+from .cycle_gan.model import GeneratorResNet
 
 
 matplotlib.use('Agg')
@@ -55,9 +54,11 @@ def app_create_fake_image(img):
     input_shape = (channels, img_height, img_width)
     n_residual_blocks = 9
     G_AB = GeneratorResNet(input_shape, n_residual_blocks)
-    G_AB.cuda()
+    cuda = torch.cuda.is_available()
+    if cuda:
+        G_AB.cuda()
 
-    checkpoint_G_AB = torch.load("./cycle_gan/pth/G_AB_8.pth.tar")
+    checkpoint_G_AB = torch.load("./cycle_gan/pth/G_AB_2.pth.tar")
     G_AB.load_state_dict(checkpoint_G_AB['state_dict'])
     G_AB.eval()
 
@@ -73,5 +74,5 @@ def app_create_fake_image(img):
 
 if __name__ == '__main__':
     remove_memory_cash()
-    img = "./user_image/kimgoeun.jpg"
+    img = "./test/test (1).jpg"
     app_create_fake_image(img)

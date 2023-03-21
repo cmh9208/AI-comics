@@ -12,6 +12,8 @@ from skimage.transform import resize
 from skimage import img_as_ubyte
 from scipy.spatial import ConvexHull
 import gc
+
+
 from app.cycle_gan.datasets import ImageDataset
 from app.cycle_gan.model import GeneratorResNet
 from app.face_vid.replicate import DataParallelWithCallback
@@ -65,9 +67,11 @@ def create_fake_image(img):
     input_shape = (channels, img_height, img_width)
     n_residual_blocks = 9
     G_AB = GeneratorResNet(input_shape, n_residual_blocks)
-    G_AB.cuda()
+    cuda = torch.cuda.is_available()
+    if cuda:
+        G_AB.cuda()
 
-    checkpoint_G_AB = torch.load("./cycle_gan/pth/G_AB_8.pth.tar")
+    checkpoint_G_AB = torch.load("./cycle_gan/pth/9.pth.tar", map_location=torch.device('cpu'))
     G_AB.load_state_dict(checkpoint_G_AB['state_dict'])
     G_AB.eval()
 
@@ -354,5 +358,5 @@ def vid_size_and_resolution_up(frame):
 
 if __name__ == '__main__':
     remove_memory_cash()
-    img = "./user_image/nayeon.jpg"
+    img = "./user_image/minho2.png"
     create_fake_img_and_vid(img)
