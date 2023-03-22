@@ -7,7 +7,7 @@ engine = pyttsx3.init()
 # 음성 속도를 300으로 설정
 engine.setProperty('rate', 250)
 
-openai.api_key = ""
+openai.api_key = "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"
 
 messages = []
 
@@ -30,3 +30,4 @@ while True:
     # 입력 속도 개선
     # 예외처리
     # 텍스트와 음성 같이 받기
+

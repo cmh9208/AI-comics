@@ -20,7 +20,7 @@ export default function Nav() {
       <div className={styles.header}>
           <div className={styles.logo} >
           <Link href='/'>
-            <Image className="bot" src={logo} width={70} height={70} alt="로고" />
+            <Image className="bot" src={logo} width={100} height={100} alt="로고" />
             
             </Link>
             

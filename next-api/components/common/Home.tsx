@@ -1,92 +1,110 @@
 import React, { useState } from 'react'
 import styles from '@/styles/Home.module.css'
+import Image from 'next/image';
+
+import iu1 from "@/public/result_images/iu-1.jpg"
+import iu2 from "@/public/result_images/iu-2.jpg"
+
+import na1 from "@/public/result_images/na-1.jpg"
+import na2 from "@/public/result_images/na-2.jpg"
+
+import s from "@/public/result_images/s.jpg"
+import ss from "@/public/result_images/ss.jpg"
+
+import min from "@/public/result_images/min.png"
 
 import Link from 'next/link';
 
+
 const Home: React.FC = () => {
  const [url, setUrl] = useState<string>("https://bucket-4cr3lx.s3.ap-northeast-2.amazonaws.com/")
-  
   return (
-    
-    <div className={styles.container} >
-      <div className={styles.mainText} style={{ display: 'flex' }}>
-      
-        <table>
-          <tbody>
-            <tr>
-              <td style={{ textAlign: "center" }}> <h4>원본 이미지</h4>
-              <img style={{width: 300}}  src={`${url}face_iu.jpg` }/>
-              </td>
-              <td style={{ textAlign: "center" }}> <h4>만화 이미지</h4>
-              <img style={{width: 300}}  src={`${url}fake_face_iu.jpg` }/>
-              </td>
-              <td style={{ textAlign: "center" }}> <h4>페이크 영상</h4>
-              <video style={{width: 300}}  controls>
-              <source src={`${url}fake_iu.jpg.mp4` } type="video/mp4" />
-              </video>
-              </td>
-            </tr>
-         
-            <tr>
-              <td> 
-              <img style={{width: 300}}  src={`${url}test.jpg` }/>
-              </td>
-              <td> 
-              <img style={{width: 300}}  src={`${url}fake_face_test.jpg` }/>
-              </td>
-              <td> 
-              <video style={{width: 300}}  controls>
-              <source src={`${url}fake_test.jpg.mp4` } type="video/mp4" />
-              </video>
-              </td>
-            </tr>
+    <div className={styles.container}>
+    <table className={styles.mainText}>
+      <tbody>
+        <tr>
+          <td>
+            <h4>원본 이미지</h4>
+            <Image src={iu1} alt="IU" width={300} height={300} />
+          </td>
+          <td>
+            <h4>만화 이미지</h4>
+            <Image src={iu2} alt="IU2" width={300} height={300} />
+          </td>
+          <td>
+            <h4>페이크 영상</h4>
+            <video style={{ width: 300 }} controls>
+              <source src={`${url}fake_iu.jpg.mp4`} type="video/mp4" />
+            </video>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <Image src={na1} alt="NA" width={300} height={300} />
+          </td>
+          <td>
+            <Image src={na2} alt="NA2" width={300} height={300} />
+          </td>
+          <td>
+            <video style={{ width: 300 }} controls>
+              <source src={`${url}fake_nayeon.jpg.mp4`} type="video/mp4" />
+            </video>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <Image src={s} alt="S" width={300} height={300} />
+          </td>
+          <td>
+            <Image src={ss} alt="SS" width={300} height={300} />
+          </td>
+          <td>
+            <video style={{ width: 300 }} controls>
+              <source src={`${url}fake_ss.jpg.mp4`} type="video/mp4" />
+            </video>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <img style={{ width: 300 }} src={`${url}nayeon.jpg`} alt="nayeon" />
+          </td>
+          <td>
+            <img style={{ width: 300 }} src={`${url}fake_face_nayeon.jpg`} alt="fake_nayeon" />
+          </td>
+          <td>
+            <video style={{ width: 300 }} controls>
+              <source src={`${url}fake_nayeon.jpg.mp4`} type="video/mp4" />
+            </video>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-            <tr>
-              <td> 
-              <img style={{width: 300}}  src={`${url}1.jpg` }/>
-              </td>
-              <td> 
-              <img style={{width: 300}}  src={`${url}2.jpg` }/>
-              </td>
-              <td> 
-              <video style={{width: 300}}  controls>
-              <source src={`${url}3.mp4` } type="video/mp4" />
-              </video>
-              </td>
-            </tr>
+    <table className={styles.mainText}>
+      <tbody>
+        <tr>
+          <td>
+            <Image src={min} alt="MIN" width={300} height={300} />
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-            <tr>
-              <td> 
-              <img style={{width: 300}}  src={`${url}nayeon.jpg` }/>
-              </td>
-              <td> 
-              <img style={{width: 300}}  src={`${url}fake_face_nayeon.jpg` }/>
-              </td>
-              <td> 
-              <video style={{width: 300}}  controls>
-              <source src={`${url}fake_nayeon.jpg.mp4` } type="video/mp4" />
-              </video>
-              </td>
-            </tr>
-           
-          </tbody>          
-          </table>
-    
-      </div>
-
- 
-  <section className='wrapper'>
-      <article className='product1'>
-        <h2>step1.내 만화 캐릭터 생성 해보기</h2>
-        <p><Link href="/menu/services/gan">생성 페이지로 이동&raquo;</Link></p>
+    <section className="wrapper">
+      <article className="product1">
+        <h4>내 만화 캐릭터 생성 해보기</h4>
+        <p style={{ fontSize: '15px' }}>
+          <Link href="/menu/services/gan">생성 페이지로 이동&raquo;</Link>
+        </p>
       </article>
-      <article className='product2'>
-        <h2>step2.Chat GPT 이용 해보기</h2>
-        <p><Link href="/menu/services/chatbot">챗봇 페이지로 이동 &raquo;</Link></p>
+      <article className="product2">
+        <h4>Chat GPT 이용 해보기</h4>
+        <p style={{ fontSize: '15px' }}>
+          <Link href="/menu/services/chatbot">챗봇 페이지로 이동 &raquo;</Link>
+        </p>
       </article>
-
-  </section>
-</div>
-  )
+    </section>
+  </div>
+  );
 }
 export default Home

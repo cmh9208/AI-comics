@@ -13,7 +13,7 @@ engine = pyttsx3.init()
 
 # 음성 속도를 300으로 설정
 engine.setProperty('rate', 250)
-openai.api_key = ""
+openai.api_key = "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"
 messages = []
 
 # 클라이언트의 텍스트를 받아 챗봇의 답변을 리턴

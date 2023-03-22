@@ -71,7 +71,7 @@ def create_fake_image(img):
     if cuda:
         G_AB.cuda()
 
-    checkpoint_G_AB = torch.load("./cycle_gan/pth/9.pth.tar", map_location=torch.device('cpu'))
+    checkpoint_G_AB = torch.load("./cycle_gan/pth/g_g_7.pth.tar", map_location=torch.device('cpu'))
     G_AB.load_state_dict(checkpoint_G_AB['state_dict'])
     G_AB.eval()
 
@@ -266,7 +266,7 @@ def face_vid_parser():
     parser.add_argument("--checkpoint", default='./face_vid/pth/00000189-checkpoint.pth.tar',
                         help="path to checkpoint to restore")
 
-    parser.add_argument("--driving_video", default='./face_vid/video_sauce/15.mp4', help="path to driving video")
+    parser.add_argument("--driving_video", default='./face_vid/video_sauce/1515.mp4', help="path to driving video")
 
     parser.add_argument("--relative", dest="relative", action="store_true",
                         help="use relative or absolute keypoint coordinates")
@@ -358,5 +358,5 @@ def vid_size_and_resolution_up(frame):
 
 if __name__ == '__main__':
     remove_memory_cash()
-    img = "./user_image/minho2.png"
+    img = "./user_image/ss.jpg"
     create_fake_img_and_vid(img)

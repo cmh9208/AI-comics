@@ -1,7 +1,8 @@
 import React from "react";
+import Image from 'next/image';
 
+import minho from "@/public/minho.png"
 export interface IntroduceItemProps {
-  ImgSrc: string;
   Name: string;
   LinkHref1: string;
   LinkHref2: string;
@@ -15,8 +16,6 @@ export interface IntroduceItemProps {
 const Introduce: React.FC = () => {
   const introduceItems: IntroduceItemProps[] = [
     {
-      ImgSrc:
-        "https://bucket-4cr3lx.s3.ap-northeast-2.amazonaws.com/minho.jpg",
       Name: "Min-Ho Choi",
       LinkHref1: "https://github.com/cmh9208",
       LinkHref2: "/",
@@ -24,16 +23,19 @@ const Introduce: React.FC = () => {
       Skill: "RestAPI, Python, AWS, Docker" ,
       Email: "Email: cwh625@gmail.com",
       Kakao: "Kakao: choiminho1",
-      ImgStyle: { width: "210px", height: "280px" },
+      ImgStyle: { width: "413px", height: "531px" },
     },
   ];
 
   return (
     <>
+    
       <div className="Box">
+      
         {introduceItems.map((item, index) => (
           <div key={index}>
-            <img src={item.ImgSrc} alt="profile" style={item.ImgStyle} />
+            
+            <Image src={minho} alt="MINHO" width={207} height={266} />
             <h2>{item.Name}</h2>
             <div className="Role">
               <a href={item.LinkHref1}>{item.Role}</a>
