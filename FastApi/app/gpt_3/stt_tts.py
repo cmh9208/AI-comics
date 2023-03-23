@@ -9,7 +9,7 @@ engine = pyttsx3.init()
 # 음성 속도를 300으로 설정
 engine.setProperty('rate', 250)
 
-openai.api_key = "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"
+openai.api_key = ""
 
 messages = []
 

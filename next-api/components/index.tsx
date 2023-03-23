@@ -6,9 +6,5 @@ export * from './common/Layout'
 
 
 
-export * from './auth/Login'
-export * from './auth/GoogleLogin'
-export * from './auth/Join'
-export * from './auth/Logout'
 
 

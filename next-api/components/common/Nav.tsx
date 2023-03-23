@@ -4,7 +4,6 @@ import styles from '@/styles/Nav.module.css'
 import Image from 'next/image';
 import { Button, Menu, MenuItem } from '@mui/material';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import logo from "@/public/AI-comics-logo.png"
 
 export default function Nav() {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -20,7 +19,7 @@ export default function Nav() {
       <div className={styles.header}>
           <div className={styles.logo} >
           <Link href='/'>
-            <Image className="bot" src={logo} width={100} height={100} alt="로고" />
+            {/* <Image className="bot" src={logo} width={100} height={100} alt="로고" /> */}
             
             </Link>
             

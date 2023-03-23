@@ -6,8 +6,8 @@ from torch.autograd import Variable
 from PIL import Image
 
 import gc
-from app.cycle_gan.datasets import ImageDataset
-from app.cycle_gan.model import GeneratorResNet
+from cycle_gan.datasets import ImageDataset
+from cycle_gan.model import GeneratorResNet
 
 
 matplotlib.use('Agg')
@@ -58,7 +58,7 @@ def app_create_fake_image(img):
     if cuda:
         G_AB.cuda()
 
-    checkpoint_G_AB = torch.load("./cycle_gan/pth/s_g_g_g_g3_5.pth.tar")
+    checkpoint_G_AB = torch.load("./cycle_gan/pth/G_AB_5.pth.tar")
     G_AB.load_state_dict(checkpoint_G_AB['state_dict'])
     G_AB.eval()
 
@@ -74,5 +74,5 @@ def app_create_fake_image(img):
 
 if __name__ == '__main__':
     remove_memory_cash()
-    img = "./test/test (28).jpg"
+    img = "./test/test (2).jpg"
     app_create_fake_image(img)

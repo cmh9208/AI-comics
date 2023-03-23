@@ -19,7 +19,7 @@ export default function ChatbotModel() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const res = await axios.post('http://localhost:8000/gpt', { user_content: userInput });
+    const res = await axios.post('http://0.0.0.0:8000/gpt', { user_content: userInput });
     const gptResponse = res.data.response;
     const newChat = { role: 'user', content: userInput };
     const newGptResponse = { role: 'assistant', content: gptResponse };

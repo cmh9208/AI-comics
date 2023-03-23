@@ -2,16 +2,6 @@ import React, { useState } from 'react'
 import styles from '@/styles/Home.module.css'
 import Image from 'next/image';
 
-import iu1 from "@/public/result_images/iu-1.jpg"
-import iu2 from "@/public/result_images/iu-2.jpg"
-
-import na1 from "@/public/result_images/na-1.jpg"
-import na2 from "@/public/result_images/na-2.jpg"
-
-import s from "@/public/result_images/s.jpg"
-import ss from "@/public/result_images/ss.jpg"
-
-import min from "@/public/result_images/min.png"
 
 import Link from 'next/link';
 
@@ -25,11 +15,11 @@ const Home: React.FC = () => {
         <tr>
           <td>
             <h4>원본 이미지</h4>
-            <Image src={iu1} alt="IU" width={300} height={300} />
+            {/* <Image src={iu1} alt="IU" width={300} height={300} /> */}
           </td>
           <td>
             <h4>만화 이미지</h4>
-            <Image src={iu2} alt="IU2" width={300} height={300} />
+            {/* <Image src={iu2} alt="IU2" width={300} height={300} /> */}
           </td>
           <td>
             <h4>페이크 영상</h4>
@@ -40,10 +30,10 @@ const Home: React.FC = () => {
         </tr>
         <tr>
           <td>
-            <Image src={na1} alt="NA" width={300} height={300} />
+            {/* <Image src={na1} alt="NA" width={300} height={300} /> */}
           </td>
           <td>
-            <Image src={na2} alt="NA2" width={300} height={300} />
+            {/* <Image src={na2} alt="NA2" width={300} height={300} /> */}
           </td>
           <td>
             <video style={{ width: 300 }} controls>
@@ -53,10 +43,10 @@ const Home: React.FC = () => {
         </tr>
         <tr>
           <td>
-            <Image src={s} alt="S" width={300} height={300} />
+            {/* <Image src={s} alt="S" width={300} height={300} /> */}
           </td>
           <td>
-            <Image src={ss} alt="SS" width={300} height={300} />
+            {/* <Image src={ss} alt="SS" width={300} height={300} /> */}
           </td>
           <td>
             <video style={{ width: 300 }} controls>
@@ -84,7 +74,7 @@ const Home: React.FC = () => {
       <tbody>
         <tr>
           <td>
-            <Image src={min} alt="MIN" width={300} height={300} />
+            {/* <Image src={min} alt="MIN" width={300} height={300} /> */}
           </td>
         </tr>
       </tbody>

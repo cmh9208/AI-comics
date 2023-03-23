@@ -14,13 +14,13 @@ from scipy.spatial import ConvexHull
 import gc
 
 
-from app.cycle_gan.datasets import ImageDataset
-from app.cycle_gan.model import GeneratorResNet
-from app.face_vid.replicate import DataParallelWithCallback
-from app.face_vid.generator import OcclusionAwareSPADEGenerator
-from app.face_vid.keypoint_detector import KPDetector, HEEstimator
-from app.face_vid.animate import normalize_kp
-from app.face_vid.face_extractor import face_extractor
+from cycle_gan.datasets import ImageDataset
+from cycle_gan.model import GeneratorResNet
+from face_vid.replicate import DataParallelWithCallback
+from face_vid.generator import OcclusionAwareSPADEGenerator
+from face_vid.keypoint_detector import KPDetector, HEEstimator
+from face_vid.animate import normalize_kp
+from face_vid.face_extractor import face_extractor
 
 matplotlib.use('Agg')
 
@@ -71,7 +71,7 @@ def create_fake_image(img):
     if cuda:
         G_AB.cuda()
 
-    checkpoint_G_AB = torch.load("./cycle_gan/pth/g_g_7.pth.tar", map_location=torch.device('cpu'))
+    checkpoint_G_AB = torch.load("./cycle_gan/pth/G_AB_6.pth.tar", map_location=torch.device('cpu'))
     G_AB.load_state_dict(checkpoint_G_AB['state_dict'])
     G_AB.eval()
 
@@ -266,7 +266,7 @@ def face_vid_parser():
     parser.add_argument("--checkpoint", default='./face_vid/pth/00000189-checkpoint.pth.tar',
                         help="path to checkpoint to restore")
 
-    parser.add_argument("--driving_video", default='./face_vid/video_sauce/1515.mp4', help="path to driving video")
+    parser.add_argument("--driving_video", default='./face_vid/video_sauce/15.mp4', help="path to driving video")
 
     parser.add_argument("--relative", dest="relative", action="store_true",
                         help="use relative or absolute keypoint coordinates")
@@ -358,5 +358,5 @@ def vid_size_and_resolution_up(frame):
 
 if __name__ == '__main__':
     remove_memory_cash()
-    img = "./user_image/ss.jpg"
+    img = "./user_image/kimgoeun.jpg"
     create_fake_img_and_vid(img)

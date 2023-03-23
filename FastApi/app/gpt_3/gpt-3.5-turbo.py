@@ -1,13 +1,12 @@
 import openai
 import pyttsx3
 
-
 engine = pyttsx3.init()
 
 # 음성 속도를 300으로 설정
 engine.setProperty('rate', 250)
 
-openai.api_key = "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"
+openai.api_key = ""
 
 messages = []
 
@@ -25,6 +24,7 @@ while True:
     messages.append({"role": "assistant", "content": f"{gpt_content}"}) # 챗봇 답변을 리스트에 추가
     print(f"GPT : {gpt_content}") # 챗봇의 답변 출력
     engine.say(gpt_content)
+    engine.runAndWait()  # 답변이 끝날때 까지 대기
     engine.stop() # 대답 출력 중지
 
     # 입력 속도 개선
