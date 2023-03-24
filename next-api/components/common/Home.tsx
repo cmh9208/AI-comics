@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import styles from '@/styles/Home.module.css'
-import Image from 'next/image';
-
 
 import Link from 'next/link';
 
@@ -74,7 +72,7 @@ const Home: React.FC = () => {
       <tbody>
         <tr>
           <td>
-            {/* <Image src={min} alt="MIN" width={300} height={300} /> */}
+          <img style={{ width: 300 }} src={`${url}minho_gan.png`} alt="minho_gan" />
           </td>
         </tr>
       </tbody>
@@ -82,15 +80,15 @@ const Home: React.FC = () => {
 
     <section className="wrapper">
       <article className="product1">
-        <h4>내 만화 캐릭터 생성 해보기</h4>
+        <h4>내 아바타 생성 해보기</h4>
         <p style={{ fontSize: '15px' }}>
-          <Link href="/menu/services/gan">생성 페이지로 이동&raquo;</Link>
+          <Link href="/menu/services/gan">아바타 생성 페이지로 이동&raquo;</Link>
         </p>
       </article>
       <article className="product2">
-        <h4>Chat GPT 이용 해보기</h4>
+        <h4>아바타랑 대화하기</h4>
         <p style={{ fontSize: '15px' }}>
-          <Link href="/menu/services/chatbot">챗봇 페이지로 이동 &raquo;</Link>
+          <Link href="/menu/services/chatbot">GPT-3 챗봇 페이지로 이동 &raquo;</Link>
         </p>
       </article>
     </section>

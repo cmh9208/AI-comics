@@ -14,13 +14,13 @@ from scipy.spatial import ConvexHull
 import gc
 
 
-from cycle_gan.datasets import ImageDataset
-from cycle_gan.model import GeneratorResNet
-from face_vid.replicate import DataParallelWithCallback
-from face_vid.generator import OcclusionAwareSPADEGenerator
-from face_vid.keypoint_detector import KPDetector, HEEstimator
-from face_vid.animate import normalize_kp
-from face_vid.face_extractor import face_extractor
+from .cycle_gan.datasets import ImageDataset
+from .cycle_gan.model import GeneratorResNet
+from .face_vid.replicate import DataParallelWithCallback
+from .face_vid.generator import OcclusionAwareSPADEGenerator
+from .face_vid.keypoint_detector import KPDetector, HEEstimator
+from .face_vid.animate import normalize_kp
+from .face_vid.face_extractor import face_extractor
 
 matplotlib.use('Agg')
 

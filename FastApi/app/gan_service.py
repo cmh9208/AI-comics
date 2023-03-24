@@ -6,8 +6,8 @@ from torch.autograd import Variable
 from PIL import Image
 
 import gc
-from cycle_gan.datasets import ImageDataset
-from cycle_gan.model import GeneratorResNet
+from .cycle_gan.datasets import ImageDataset
+from .cycle_gan.model import GeneratorResNet
 
 
 matplotlib.use('Agg')

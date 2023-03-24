@@ -1,6 +1,7 @@
 import os
 from fastapi import FastAPI, File, UploadFile, APIRouter
 import openai
+from pydantic import BaseModel
 
 from starlette.responses import JSONResponse
 
@@ -14,7 +15,6 @@ app = FastAPI()
 
 openai.api_key = ""
 
-user_content = "안녕"
 def chat_gpt(user_content):
     engine = pyttsx3.init()
 
@@ -27,10 +27,7 @@ def chat_gpt(user_content):
         completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages)
         gpt_content = completion.choices[0].message["content"].strip()  # 챗봇의 답변을 변수에 저장
         messages.append({"role": "assistant", "content": f"{gpt_content}"})  # 챗봇 답변을 리스트에 추가
-        if user_content == "대화 종료":
-            print("대화가 종료 됩니다.")
-            return gpt_content
-            break
+
         print(f"GPT : {gpt_content}")  # 챗봇의 답변 출력
         engine.say(gpt_content)
         engine.runAndWait()  # 답변이 끝날때 까지 대기
@@ -38,11 +35,22 @@ def chat_gpt(user_content):
         return gpt_content
 
 
+class UserInput(BaseModel):
+    user_content: str
 
 
-@app.get("/gpt")
-async def gpt():
-    return {"message": chat_gpt(user_content)}
+@app.post("/gpt")
+async def get_response(user_input: UserInput):
+
+    messages = []
+    messages.append({"role": "user", "content": f"{user_input}"})  # 사용자의 질문을 리스트에 추가
+    completion = openai.ChatCompletion.create(model="gpt-3.5-turbo", messages=messages)
+    gpt_content = completion.choices[0].message["content"].strip()  # 챗봇의 답변을 변수에 저장
+    messages.append({"role": "assistant", "content": f"{gpt_content}"})  # 챗봇 답변을 리스트에 추가
+
+    print(f"GPT : {gpt_content}")  # 챗봇의 답변 출력
+
+    return {"response": gpt_content}
 
 
 
@@ -57,12 +65,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get("/hello")
-async def say_hello():
-    return {"message": "hahahahahahahahahahahahahahahahahahaha!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"}
-
-
-
+@app.post("/hello")
+async def say_hello(user_content: str):
+    a = user_content
+    print(a)
+    print(type(a))
+    return {"response": a}
 
 
 

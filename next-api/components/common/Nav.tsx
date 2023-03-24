@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link';
 import styles from '@/styles/Nav.module.css'
 import Image from 'next/image';
@@ -14,14 +14,16 @@ export default function Nav() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  const [url, setUrl] = useState<string>("https://bucket-4cr3lx.s3.ap-northeast-2.amazonaws.com/")
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
           <div className={styles.logo} >
           <Link href='/'>
-            {/* <Image className="bot" src={logo} width={100} height={100} alt="로고" /> */}
-            
-            </Link>
+           <img style={{ width: 100 }} src={`${url}ai_logo.png`} alt="logo" />
+          </Link>
             
           </div>
           <div className={styles.menus} >
