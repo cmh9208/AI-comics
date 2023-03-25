@@ -35,7 +35,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
     });
 
     Dio dio = Dio();
-    Response response = await dio.post('http://10.0.2.2:8000/gan_vid_service', data: formData);
+    Response response = await dio.post('http://api.choiminho.co.kr/gan_vid_service', data: formData);
 
     setState(() {
       _imageFile = null;

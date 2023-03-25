@@ -6,7 +6,6 @@ import { HYDRATE } from 'next-redux-wrapper';
 import userReducer from './slices/user';
 import voiceReducer from './slices/voice'
 import imageReducer from './slices/image'
-import rootSaga from '@/modules/sagas';
 import createSagaMiddleware from '@redux-saga/core'
 import { TypedUseSelectorHook, useSelector  } from 'react-redux';
 
@@ -44,7 +43,6 @@ const makeStore = () =>{
             .concat(logger) ,
         devTools :isDev
     });
-    sagaMiddleware.run(rootSaga)
     return store
 }
 const store = rootReducer

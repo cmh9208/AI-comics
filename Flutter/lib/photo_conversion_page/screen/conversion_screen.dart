@@ -27,7 +27,7 @@ class _ConversionScreenState extends State<ConversionScreen> {
 
     // 이미지를 서버로 전송
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:8000/upload-image'),
+      Uri.parse('http://api.choiminho.co,kr/upload-image'),
       body: {'file': http.MultipartFile.fromBytes('file', _imageFile!.readAsBytesSync(), filename: 'image.png')},
     );
     if (response.statusCode == 200) {

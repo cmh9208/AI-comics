@@ -19,17 +19,17 @@ export default function Nav() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-          <div className={styles.logo} >
-          <Link href='/'>
-           <img style={{ width: 100 }} src={`${url}ai_logo.png`} alt="logo" />
-          </Link>
-            
+      <div className={styles.header } style={{justifyContent: 'center'}}>
+          <div className={styles.logo} style={{width:300}}>
+            <Link href='/'>
+             <img style={{ width: 80 }} src={`${url}ai_logo.png`} alt="logo" />
+            </Link>
           </div>
           <div className={styles.menus} >
             <div className={styles.mainMenu}>
               <Button style={{fontSize:"20px",color:"black"}}><Link href='/menu/intro'>소개</Link></Button>  
               <Button style={{fontSize:"20px",color:"black"}}><Link href='/menu/team'>팀원</Link></Button>
+             
               <Button
                 id="basic-button"
                 aria-controls={open ? 'basic-menu' : undefined}

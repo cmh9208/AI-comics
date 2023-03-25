@@ -10,7 +10,7 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head />
-        <title>MIBOT</title>
+        <title>AI-comics</title>
         <meta charSet="utf-8"/>
         <meta
         

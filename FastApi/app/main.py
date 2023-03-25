@@ -56,7 +56,7 @@ async def get_response(user_input: UserInput):
 
 
 # CORS 설정 추가
-origins = ["http://localhost", "http://localhost:3000"]
+origins = ["http://localhost", "http://localhost:3000", "http://minho-choi.com.s3-website.ap-northeast-2.amazonaws.com"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -64,7 +64,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+# "http://localhost", "http://localhost:3000",
 @app.post("/hello")
 async def say_hello(user_content: str):
     a = user_content
@@ -99,9 +99,9 @@ async def gan_vid_service(image: UploadFile = File(...)):
 
     # 얼굴 추출 이미지, 만화 이미지, 만화 영상 3개를 리턴
     urls = {
-        "face_url": f"http://localhost:8000/result_gan_vid/face_{image.filename}",
-        "fake_face_url": f"http://localhost:8000/result_gan_vid/fake_face_{image.filename}",
-        "fake_vid_url": f"http://localhost:8000/result_gan_vid/fake_{image.filename}.mp4"
+        "face_url": f"http://api.choiminho.co,kr/result_gan_vid/face_{image.filename}",
+        "fake_face_url": f"http://api.choiminho.co,kr/result_gan_vid/fake_face_{image.filename}",
+        "fake_vid_url": f"http://api.choiminho.co,kr/result_gan_vid/fake_{image.filename}.mp4"
     }
     return urls
 
