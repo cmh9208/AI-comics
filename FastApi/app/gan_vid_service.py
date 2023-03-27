@@ -1,4 +1,6 @@
 import os, sys, yaml, matplotlib, imageio, torch
+import shutil
+
 import cv2
 import torchvision.transforms as transforms
 from torchvision.utils import save_image
@@ -12,7 +14,7 @@ from skimage.transform import resize
 from skimage import img_as_ubyte
 from scipy.spatial import ConvexHull
 import gc
-
+import face_alignment
 
 from .cycle_gan.datasets import ImageDataset
 from .cycle_gan.model import GeneratorResNet
@@ -24,10 +26,7 @@ from .face_vid.face_extractor import face_extractor
 
 matplotlib.use('Agg')
 
-# cuda 메모리 캐시 제거
-def remove_memory_cash():
-    gc.collect()
-    torch.cuda.empty_cache()
+
 
 def get_image_size(img, key):
     global value
@@ -41,8 +40,7 @@ def get_image_size(img, key):
     return value
 
 def define_tensor(img):
-    cuda = torch.cuda.is_available()
-    Tensor = torch.cuda.FloatTensor if cuda else torch.Tensor
+    Tensor = torch.Tensor
     input_nc = 3
     batch_size = 1
     input_A = Tensor(batch_size, input_nc, get_image_size(img, 'h'), get_image_size(img, 'w'))
@@ -67,11 +65,9 @@ def create_fake_image(img):
     input_shape = (channels, img_height, img_width)
     n_residual_blocks = 9
     G_AB = GeneratorResNet(input_shape, n_residual_blocks)
-    cuda = torch.cuda.is_available()
-    if cuda:
-        G_AB.cuda()
+    G_AB.to('cpu')
 
-    checkpoint_G_AB = torch.load("./cycle_gan/pth/G_AB_6.pth.tar", map_location=torch.device('cpu'))
+    checkpoint_G_AB = torch.load("app/cycle_gan/pth/G_AB_6.pth.tar", map_location=torch.device('cpu'))
     G_AB.load_state_dict(checkpoint_G_AB['state_dict'])
     G_AB.eval()
 
@@ -81,8 +77,8 @@ def create_fake_image(img):
 
         file_name = img[img.rfind('/') + 1:] # images 경로의 마지막 파일명만 가져오기
 
-        save_image(fake_B, "./result_gan_vid/fake_%s" % file_name)
-        img = imageio.v2.imread("./result_gan_vid/fake_%s" % file_name)
+        save_image(fake_B, "result_gan_vid/fake_%s" % file_name)
+        img = imageio.v2.imread("result_gan_vid/fake_%s" % file_name)
         return img
 
 def load_checkpoints(config_path, checkpoint_path, cpu=False):
@@ -92,21 +88,21 @@ def load_checkpoints(config_path, checkpoint_path, cpu=False):
     generator = OcclusionAwareSPADEGenerator(**config['model_params']['generator_params'], **config['model_params']['common_params'])
 
     if not cpu:
-        generator.cuda()
+        generator.to('cpu')
 
     kp_detector = KPDetector(**config['model_params']['kp_detector_params'], **config['model_params']['common_params'])
 
     if not cpu:
-        kp_detector.cuda()
+        kp_detector.to('cpu')
 
     he_estimator = HEEstimator(**config['model_params']['he_estimator_params'], **config['model_params']['common_params'])
     if not cpu:
-        he_estimator.cuda()
+        he_estimator.to('cpu')
 
     if cpu:
         checkpoint = torch.load(checkpoint_path, map_location=torch.device('cpu'))
     else:
-        checkpoint = torch.load(checkpoint_path)
+        checkpoint = torch.load(checkpoint_path, map_location=torch.device('cpu'))
 
     generator.load_state_dict(checkpoint['generator'])
     kp_detector.load_state_dict(checkpoint['kp_detector'])
@@ -169,17 +165,17 @@ def keypoint_transformation(kp_canonical, he, estimate_jacobian=True, free_view=
         roll = headpose_pred_to_degree(roll)
     else:
         if yaw is not None:
-            yaw = torch.tensor([yaw]).cuda()
+            yaw = torch.tensor([yaw]).to('cpu')
         else:
             yaw = he['yaw']
             yaw = headpose_pred_to_degree(yaw)
         if pitch is not None:
-            pitch = torch.tensor([pitch]).cuda()
+            pitch = torch.tensor([pitch]).to('cpu')
         else:
             pitch = he['pitch']
             pitch = headpose_pred_to_degree(pitch)
         if roll is not None:
-            roll = torch.tensor([roll]).cuda()
+            roll = torch.tensor([roll]).to('cpu')
         else:
             roll = he['roll']
             roll = headpose_pred_to_degree(roll)
@@ -211,7 +207,7 @@ def make_animation(source_image, driving_video, generator, kp_detector, he_estim
         predictions = []
         source = torch.tensor(source_image[np.newaxis].astype(np.float32)).permute(0, 3, 1, 2)
         if not cpu:
-            source = source.cuda()
+            source = source.to('cpu')
         driving = torch.tensor(np.array(driving_video)[np.newaxis].astype(np.float32)).permute(0, 4, 1, 2, 3)
         kp_canonical = kp_detector(source)
         he_source = he_estimator(source)
@@ -223,7 +219,7 @@ def make_animation(source_image, driving_video, generator, kp_detector, he_estim
         for frame_idx in tqdm(range(driving.shape[2])):
             driving_frame = driving[:, :, frame_idx]
             if not cpu:
-                driving_frame = driving_frame.cuda()
+                driving_frame = driving_frame.to('cpu')
             he_driving = he_estimator(driving_frame)
             kp_driving = keypoint_transformation(kp_canonical, he_driving, estimate_jacobian, free_view=free_view,
                                                  yaw=yaw, pitch=pitch, roll=roll)
@@ -236,7 +232,7 @@ def make_animation(source_image, driving_video, generator, kp_detector, he_estim
     return predictions
 
 def find_best_frame(source, driving, cpu=False):
-    import face_alignment
+
 
     def normalize_kp(kp):
         kp = kp - kp.mean(axis=0, keepdims=True)
@@ -246,7 +242,7 @@ def find_best_frame(source, driving, cpu=False):
         return kp
 
     fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._2D, flip_input=True,
-                                      device='cpu' if cpu else 'cuda')
+                                      device='cpu' if cpu else 'cpu')
     kp_source = fa.get_landmarks(255 * source)[0]
     kp_source = normalize_kp(kp_source)
     norm = float('inf')
@@ -260,38 +256,38 @@ def find_best_frame(source, driving, cpu=False):
             frame_num = i
     return frame_num
 
-def face_vid_parser():
-    parser = ArgumentParser()
-    parser.add_argument("--config", default='./face_vid/vox-256.yaml', help="path to config")
-    parser.add_argument("--checkpoint", default='./face_vid/pth/00000189-checkpoint.pth.tar',
-                        help="path to checkpoint to restore")
-
-    parser.add_argument("--driving_video", default='./face_vid/video_sauce/15.mp4', help="path to driving video")
-
-    parser.add_argument("--relative", dest="relative", action="store_true",
-                        help="use relative or absolute keypoint coordinates")
-    parser.add_argument("--adapt_scale", dest="adapt_scale", action="store_true",
-                        help="adapt movement scale based on convex hull of keypoints")
-
-    parser.add_argument("--find_best_frame", dest="find_best_frame", action="store_true",
-                        help="Generate from the frame that is the most alligned with source. (Only for faces, requires face_aligment lib)")
-
-    parser.add_argument("--best_frame", dest="best_frame", type=int, default=None,
-                        help="Set frame to start from.")
-
-    parser.add_argument("--cpu", dest="cpu", action="store_true", help="cpu mode.")
-
-    parser.add_argument("--free_view", dest="free_view", action="store_true", help="control head pose")
-    parser.add_argument("--yaw", dest="yaw", type=int, default=None, help="yaw")
-    parser.add_argument("--pitch", dest="pitch", type=int, default=None, help="pitch")
-    parser.add_argument("--roll", dest="roll", type=int, default=None, help="roll")
-
-    parser.set_defaults(relative=False)
-    parser.set_defaults(adapt_scale=False)
-    parser.set_defaults(free_view=False)
-
-    opt = parser.parse_args()
-    return opt
+# def face_vid_parser():
+#     parser = ArgumentParser()
+#     # parser.add_argument("--config", default='app/face_vid/vox-256.yaml', help="path to config")
+#     parser.add_argument("--checkpoint", default='app/face_vid/pth/00000189-checkpoint.pth.tar',
+#                         help="path to checkpoint to restore")
+#
+#     # parser.add_argument("--driving_video", default='app/face_vid/video_sauce/15.mp4', help="path to driving video")
+#
+#     parser.add_argument("--relative", dest="relative", action="store_true",
+#                         help="use relative or absolute keypoint coordinates")
+#     parser.add_argument("--adapt_scale", dest="adapt_scale", action="store_true",
+#                         help="adapt movement scale based on convex hull of keypoints")
+#
+#     parser.add_argument("--find_best_frame", dest="find_best_frame", action="store_true",
+#                         help="Generate from the frame that is the most alligned with source. (Only for faces, requires face_aligment lib)")
+#
+#     parser.add_argument("--best_frame", dest="best_frame", type=int, default=None,
+#                         help="Set frame to start from.")
+#
+#     # parser.add_argument("--cpu", dest="cpu", action="store_true", help="cpu mode.")
+#
+#     parser.add_argument("--free_view", dest="free_view", action="store_true", help="control head pose")
+#     parser.add_argument("--yaw", dest="yaw", type=int, default=None, help="yaw")
+#     parser.add_argument("--pitch", dest="pitch", type=int, default=None, help="pitch")
+#     parser.add_argument("--roll", dest="roll", type=int, default=None, help="roll")
+#
+#     parser.set_defaults(relative=False)
+#     parser.set_defaults(adapt_scale=False)
+#     parser.set_defaults(free_view=False)
+#
+#     opt = parser.parse_args()
+#     return opt
 
 def create_fake_img_and_vid(img):
     create_repository()
@@ -300,9 +296,10 @@ def create_fake_img_and_vid(img):
     img = face_extractor(img) # 추출된 이미지는 512px
     img = create_fake_image(img)
 
-    opt = face_vid_parser()
+    # opt = face_vid_parser()
+
     source_image = img
-    reader = imageio.get_reader(opt.driving_video)
+    reader = imageio.get_reader('app/face_vid/video_sauce/15.mp4')
     fps = reader.get_meta_data()['fps']
     driving_video = []
     try:
@@ -314,40 +311,52 @@ def create_fake_img_and_vid(img):
 
     source_image = resize(source_image, (256, 256))[..., :3] # 512 이미지를 리사이즈 하여 input
     driving_video = [resize(frame, (256, 256))[..., :3] for frame in driving_video]
-    generator, kp_detector, he_estimator = load_checkpoints(config_path=opt.config, checkpoint_path=opt.checkpoint, cpu=opt.cpu)
+    generator, kp_detector, he_estimator = load_checkpoints(config_path='app/face_vid/vox-256.yaml',
+                                                            checkpoint_path='app/face_vid/pth/00000189-checkpoint.pth.tar',
+                                                            cpu='store_true')
 
-    with open(opt.config) as f:
+    with open('app/face_vid/vox-256.yaml') as f:
         config = yaml.load(f, Loader=yaml.SafeLoader)
     estimate_jacobian = config['model_params']['common_params']['estimate_jacobian']
     print(f'estimate jacobian: {estimate_jacobian}')
 
-    if opt.find_best_frame or opt.best_frame is not None:
-        i = opt.best_frame if opt.best_frame is not None else find_best_frame(source_image, driving_video, cpu=opt.cpu)
+    relative = False
+    adapt_scale = False
+    find_best_frame = True
+    best_frame = 10
+    free_view = False
+    yaw = None
+    pitch = None
+    roll = None
+
+    if find_best_frame or best_frame is not None:
+        i = best_frame if best_frame is not None else find_best_frame(source_image, driving_video, cpu=True)
         print("Best frame: " + str(i))
         driving_forward = driving_video[i:]
         driving_backward = driving_video[:(i + 1)][::-1]
         predictions_forward = make_animation(source_image, driving_forward, generator, kp_detector, he_estimator,
-                                             relative=opt.relative, adapt_movement_scale=opt.adapt_scale,
-                                             estimate_jacobian=estimate_jacobian, cpu=opt.cpu, free_view=opt.free_view,
-                                             yaw=opt.yaw, pitch=opt.pitch, roll=opt.roll)
+                                             relative=relative, adapt_movement_scale=adapt_scale,
+                                             estimate_jacobian=estimate_jacobian, cpu=True, free_view=free_view,
+                                             yaw=yaw, pitch=pitch, roll=roll)
         predictions_backward = make_animation(source_image, driving_backward, generator, kp_detector, he_estimator,
-                                              relative=opt.relative, adapt_movement_scale=opt.adapt_scale,
-                                              estimate_jacobian=estimate_jacobian, cpu=opt.cpu, free_view=opt.free_view,
-                                              yaw=opt.yaw, pitch=opt.pitch, roll=opt.roll)
+                                              relative=relative, adapt_movement_scale=adapt_scale,
+                                              estimate_jacobian=estimate_jacobian, cpu=True, free_view=free_view,
+                                              yaw=yaw, pitch=pitch, roll=roll)
         predictions = predictions_backward[::-1] + predictions_forward[1:]
     else:
         predictions = make_animation(source_image, driving_video, generator, kp_detector, he_estimator,
-                                     relative=opt.relative, adapt_movement_scale=opt.adapt_scale,
-                                     estimate_jacobian=estimate_jacobian, cpu=opt.cpu, free_view=opt.free_view,
-                                     yaw=opt.yaw, pitch=opt.pitch, roll=opt.roll)
+                                     relative=relative, adapt_movement_scale=adapt_scale,
+                                     estimate_jacobian=estimate_jacobian, cpu=True, free_view=free_view,
+                                     yaw=yaw, pitch=pitch, roll=roll)
 
-    result_vid_name = './result_gan_vid/fake_%s.mp4' % file_name
+    result_vid_name = 'result_gan_vid/fake_%s.mp4' % file_name
 
     # a = [img_as_ubyte(frame) for frame in predictions] # 영상 프레임들을 리스트로 저장
     # imageio.v2.mimsave(result_vid_name, a, fps=fps) # 원본 사이즈 그대로 mp4 생성
 
 
     imageio.v2.mimsave(result_vid_name, [img_as_ubyte(vid_size_and_resolution_up(frame)) for frame in predictions], fps=fps) # 512로 리사이즈
+
 
     sys.stdout.write('\r가짜 이미지와 영상 생성이 완료 되었습니다.')
 
@@ -356,7 +365,10 @@ def vid_size_and_resolution_up(frame):
     f = cv2.resize(frame, (512, 512), cv2.INTER_LANCZOS4)
     return f
 
-if __name__ == '__main__':
-    remove_memory_cash()
-    img = "./user_image/kimgoeun.jpg"
-    create_fake_img_and_vid(img)
+# if __name__ == '__main__':
+    # img = "./user_image/kimgoeun.jpg"
+    # create_fake_img_and_vid(img)
+    # os.rmdir('result_gan_vid') # 디렉토리 사제
+    # shutil.rmtree('user_image') # 디렉토리와 내부 파일 삭제
+    # 디렉 생성안됨 -> 이미지 저장 시도 해보기
+    # os.mkdir('user_image')  # 디렉토리 생성

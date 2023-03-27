@@ -6,7 +6,7 @@ import PIL.Image
 from absl import app
 
 def get_landmarks(image):
-    predictor_model_path = "face_vid/shape_predictor_68_face_landmarks.dat"
+    predictor_model_path = "app/face_vid/shape_predictor_68_face_landmarks.dat"
     detector = dlib.get_frontal_face_detector()
     shape_predictor = dlib.shape_predictor(predictor_model_path)
 
@@ -101,7 +101,7 @@ def face_extractor(img):
 
         return img
 
-if __name__ == "__main__":
-    img = os.path.join("user_image/kimgoeun.jpg")
-    face_extractor(img)
+# if __name__ == "__main__":
+#     img = os.path.join("user_image/kimgoeun.jpg")
+#     face_extractor(img)
 
