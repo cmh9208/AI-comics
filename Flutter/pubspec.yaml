@@ -39,9 +39,12 @@ dependencies:
   firebase_core: ^2.7.0
   firebase_auth: ^4.2.9
   http: ^0.13.5
+  image: ^3.0.2
   image_picker: ^0.8.7
   path_provider: ^2.0.13
   image_gallery_saver: ^1.7.1
+  gallery_saver: ^2.0.1
+  flutter_image_compress: ^1.1.1
   uuid: 3.0.6
   dio: ^4.0.6
   flutter_cache_manager: ^3.3.0

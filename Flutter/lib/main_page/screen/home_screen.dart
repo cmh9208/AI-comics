@@ -6,6 +6,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:ai_comics/main_page/component/swipe_image.dart';
 import 'package:ai_comics/photo_conversion_page/screen/conversion_screen.dart';
 
+import '../../comics_deco/screen/deco_screen.dart';
+import '../../photo_conversion_page/screen/zzz.dart';
+
 class Home extends StatelessWidget {
   const Home({Key? key}) : super(key: key);
 
@@ -148,7 +151,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             onPressed: () {
                                               Navigator.push(
                                                 context,
-                                                MaterialPageRoute(builder: (context) => ConversionScreen()),
+                                                MaterialPageRoute(builder: (context) => ConversionScreen2()),
                                               );
                                             },
                                             child: Text('사진변환'),
@@ -162,9 +165,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                               ),
                                             ),
                                             onPressed: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => DecoScreen()),
+                                              );
                                               // 버튼을 클릭할 때 실행되는 코드를 여기에 작성합니다.
                                             },
-                                            child: Text('만화감상'),
+                                            child: Text('만화데코'),
                                           ),
                                       ],
                                     ),

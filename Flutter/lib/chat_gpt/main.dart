@@ -31,7 +31,7 @@ class _ChatbotPageState extends State<ChatbotPage> {
   final List<Map<String, dynamic>> _messages = [];
 
   Future<void> _sendUserInput(String userInput) async {
-    String apiUrl = "http://10.0.2.2:8000/gpt";
+    String apiUrl = "http://api.choiminho.co.kr/gpt";
 
     Map<String, dynamic> body = {
       "user_content": userInput

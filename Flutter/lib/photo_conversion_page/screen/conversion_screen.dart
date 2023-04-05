@@ -1,187 +1,64 @@
-import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'dart:io';
-import 'package:ai_comics/main_page/screen/home_screen.dart';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:http/http.dart' as http;
-// 갤러리에 이미지 저장을 위한 패키지
-import 'package:path_provider/path_provider.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-
-import '../../comics_making/screen/making_screen.dart';
 
 class ConversionScreen extends StatefulWidget {
   @override
-  _ConversionScreenState createState() => _ConversionScreenState();
+  _ImageUploadScreenState createState() => _ImageUploadScreenState();
 }
 
-class _ConversionScreenState extends State<ConversionScreen> {
+class _ImageUploadScreenState extends State<ConversionScreen> {
   File? _imageFile;
   String? _imageUrl;
 
   Future<void> _pickImage(ImageSource source) async {
     final pickedFile = await ImagePicker().pickImage(source: source);
-    setState(() {
-      _imageFile = File(pickedFile!.path);
-    });
-
-    // 이미지를 서버로 전송
-    final response = await http.post(
-      Uri.parse('http://api.choiminho.co,kr/upload-image'),
-      body: {'file': http.MultipartFile.fromBytes('file', _imageFile!.readAsBytesSync(), filename: 'image.png')},
-    );
-    if (response.statusCode == 200) {
-      final responseData = jsonDecode(response.body);
+    if (pickedFile != null) {
       setState(() {
-        _imageUrl = responseData['url'];
+        _imageFile = File(pickedFile.path);
+        _imageUrl = null;
       });
-
-      // 변환성공 문구 출력
-      showDialog(
-        context: context,
-        builder: (context) =>
-            AlertDialog(
-              title: Text(
-                '이미지 변환 완료',
-                  style: TextStyle(
-                      color: Colors.white
-                  ),
-              ),
-              content: Text(
-                '이미지 변환이 성공적으로 완료되었습니다.',
-                  style: TextStyle(
-                      color: Colors.white
-                  ),
-              ),
-              actions: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    _saveImageToGallery();
-                  },
-                  child: Text(
-                    '저장',
-                      style: TextStyle(
-                          color: Colors.white
-                      ),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                    '취소',
-                      style: TextStyle(
-                          color: Colors.white
-                      ),
-                  ),
-                ),
-              ],
-            ),
-      );
-    } else {
-      // 변환실패 문구 출력
-      showDialog(
-        context: context,
-        builder: (context) =>
-            AlertDialog(
-              title: Text(
-                  '이미지 변환 실패',
-                  style: TextStyle(
-                      color: Colors.black
-                  ),
-              ),
-              content: Text(
-                  '이미지 변환이 실패하였습니다. 다시 시도해주세요.',
-                  style: TextStyle(
-                      color: Colors.black
-                  ),
-              ),
-              actions: [
-                ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                  '확인',
-                      style: TextStyle(
-                          color: Colors.black
-                      ),
-                  ),
-                ),
-              ],
-            ),
-      );
     }
   }
 
-  Future<void> _saveImageToGallery() async {
-    final response = await http.get(Uri.parse(_imageUrl!));
-    final bytes = response.bodyBytes;
-    final directory = await getExternalStorageDirectory();
-    final file = File('${directory!.path}/${DateTime
-        .now()
-        .millisecondsSinceEpoch}.jpg');
-    await file.writeAsBytes(bytes);
+  Future<void> _uploadImage() async {
+    if (_imageFile == null) {
+      return;
+    }
 
-    final result = await ImageGallerySaver.saveImage(bytes);
-    if (result['isSuccess']) {
-      // 저장 성공 문구 출력
-      showDialog(
-        context: context,
-        builder: (context) =>
-            AlertDialog(
-              title: Text(
-                  '이미지 저장 완료',
-                  style: TextStyle(
-                      color: Colors.black
-                  ),
-              ),
-              content: Text(
-                  '이미지 저장이 성공적으로 완료되었습니다.',
-                  style: TextStyle(
-                      color: Colors.black
-                  ),
-              ),
-              actions: [
-                ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                      style: TextStyle(
-                          color: Colors.black
-                      ), '확인'),
-                ),
-              ],
-            ),
+    String filename = _imageFile!.path.split('/').last;
+    FormData formData = FormData.fromMap({
+      'image': await MultipartFile.fromFile(_imageFile!.path, filename: filename),
+    });
+
+    Dio dio = Dio();
+    Response response = await dio.post(
+        'http://api.choiminho.co.kr/gan_vid_service',
+        data: formData);
+
+    setState(() {
+      _imageFile = null;
+    });
+
+    if (response.statusCode == 200) {
+      String imageUrl = response.data['url'];
+      setState(() {
+        _imageUrl = imageUrl;
+      });
+    }
+  }
+
+  Future<void> _saveImage() async {
+    if (_imageUrl != null) {
+      var response = await Dio().get(_imageUrl!);
+      final result = await ImageGallerySaver.saveImage(
+        Uint8List.fromList(response.data),
+        name: 'my_image.png',
       );
-    } else {
-      // 저장 실패 문구 출력
-      showDialog(
-        context: context,
-        builder: (context) =>
-            AlertDialog(
-              title: Text(
-                  '이미지 저장 실패',
-                  style: TextStyle(
-                      color: Colors.black
-                  ),
-              ),
-              content: Text(
-                  '이미지 저장이 실패하였습니다. 다시 시도해주세요.',
-                  style: TextStyle(
-                      color: Colors.black
-                  ),
-              ),
-              actions: [
-                ElevatedButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: Text(
-                  '확인',
-                      style: TextStyle(
-                          color: Colors.black
-                      ),
-                  ),
-                ),
-              ],
-            ),
-      );
+      print(result);
     }
   }
 
@@ -189,170 +66,92 @@ class _ConversionScreenState extends State<ConversionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Image Picker Example'),
+        title: Text('이미지 업로드'),
       ),
-      body: Stack(
-        children: [
-          Center(
-            child: ColorFiltered(
-              colorFilter: ColorFilter.mode(Colors.white.withOpacity(1), BlendMode.dstATop),
-              child: Image.asset('assets/images/home_background/ggg.png'),
-            ),
-          ),
-          Container(
-            color: Colors.transparent,
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (_imageFile != null)
-                  Image.file(
-                    _imageFile!,
-                    height: 200,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            if (_imageUrl != null) ...[
+              Image.network(
+                _imageUrl!,
+                width: 100, // 원하는 너비 설정
+                height: 100, // 원하는 높이 설정
+                fit: BoxFit.contain,
+              ),
+              SizedBox(height: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: _saveImage,
+                    child: Text('이미지 저장'),
                   ),
-                if (_imageUrl != null)
-                  Image.network(
-                    _imageUrl!,
-                    height: 200,
+                  SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        _imageUrl = null;
+                      });
+                    },
+                    child: Text('이미지 삭제'),
                   ),
-                if (_imageUrl == null && _imageFile != null)
-                  Text(
-                    '서버 연결 실패.',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                if (_imageUrl == null && _imageFile == null)
-                  Text(
-                    '아직 변환된 이미지가 없습니다 \n 이미지 선택 시 변환이 진행 됩니다.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: Colors.white),
-                  ),
-                SizedBox(height: 20),
-                Container(
-                  width: 150,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        side: BorderSide(color: Colors.white),
-                      ),
-                    ),
-                    onPressed: () => _pickImage(ImageSource.gallery),
-                    child: Text('이미지 선택'),
-                  ),
-                ),
-                if (_imageUrl != null) SizedBox(height: 20),
-                Container(
-                  width: 150,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                        side: BorderSide(color: Colors.white),
-                      ),
-                    ),
-                    onPressed: _saveImageToGallery,
-                    child: Text('변환된 이미지 저장'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          // 하단 메뉴 바
-          Stack(
-            alignment: Alignment.center,
-            children: [
-             Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-               child: Column(
-                 mainAxisAlignment: MainAxisAlignment.center,
-                 children: [
-                  Container(
-                    alignment: Alignment.center,
-                    height: 50,
-                    color: Colors.black.withOpacity(0.5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Container(
-                              width: 85,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0), // 버튼 R값
-                                    side: BorderSide(color: Colors.white),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => Home()),
-                                  );
-                                },
-                                child: Text('홈 화면'),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Container(
-                              width: 85,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0), // 버튼 R값
-                                    side: BorderSide(color: Colors.white),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => MakingScreen()),
-                                  );
-                                },
-                                child: Text('만화제작'),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Container(
-                              width: 85,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.transparent,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0), // 버튼 R값
-                                    side: BorderSide(color: Colors.white),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(builder: (context) => Home()),
-                                  );
-                                },
-                                child: Text('만화감상'),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                   ),
-                  ],
-               ),
-             ),
+                ],
+              ),
+            ] else if (_imageFile != null) ...[
+              Image.file(
+                _imageFile!,
+                width: 100, // 원하는 너비 설정
+                height: 100, // 원하는 높이 설정
+                fit: BoxFit.contain,
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _uploadImage,
+                child: Text('이미지 업로드'),
+              ),
+              SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: () => _pickImage(ImageSource.gallery),
+                child: Text('갤러리에서 선택'),
+              ),
+              SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: () => _pickImage(ImageSource.camera),
+                child: Text('카메라로 촬영'),
+              ),
+            ] else ...[
+              ElevatedButton(
+                onPressed: () => _pickImage(ImageSource.gallery),
+                child: Text('갤러리에서 선택'),
+              ),
+              SizedBox(height: 8),
+              ElevatedButton(
+                onPressed: () => _pickImage(ImageSource.camera),
+                child: Text('카메라로 촬영'),
+              ),
             ],
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
+
+// void main() {
+//   runApp(MyApp());
+// }
+//
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Flutter Image Upload',
+//       theme: ThemeData(
+//         primarySwatch: Colors.blue,
+//       ),
+//       home: ImageUploadScreen(),
+//     );
+//   }
+// }
+// SoketException: connection refused (OS Eroor Connection refused error= 111.) address = localhost port =50114

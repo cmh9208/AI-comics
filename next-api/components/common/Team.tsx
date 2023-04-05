@@ -3,9 +3,12 @@ import React, { useState } from 'react'
 
 const Introduce: React.FC = () => {
   const [url, setUrl] = useState<string>("https://bucket-4cr3lx.s3.ap-northeast-2.amazonaws.com/");
-
+  
   const OnClick1 = () => {
     window.location.href = 'https://github.com/cmh9208/AI-comics';
+  };
+  const OnClick12 = () => {
+    window.location.href = 'https://blog.naver.com/cwh920625/223057051711';
   };
 
 
@@ -17,8 +20,10 @@ const Introduce: React.FC = () => {
           <tr>
             <td style={{ textAlign: 'center' }}>
               <p style={{ fontSize: '12px' }}>Click.</p>
-              <img onClick={OnClick1} style={{ width: 30 }} src={`${url}github.png`} alt="My button image" />
-              {/* &nbsp;&nbsp;&nbsp; */}
+              <img onClick={OnClick1} style={{ width: 30 }} src={`${url}github.png`} alt="git button image" />
+              &nbsp;&nbsp;&nbsp;
+              <img onClick={OnClick12} style={{ width: 30 }} src={`${url}blog.png`} alt="blog button image" />
+
             </td>
           </tr>
 

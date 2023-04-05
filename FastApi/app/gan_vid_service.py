@@ -17,12 +17,12 @@ import gc
 import face_alignment
 
 from .cycle_gan.datasets import ImageDataset
-from .cycle_gan.model import GeneratorResNet
-from .face_vid.replicate import DataParallelWithCallback
-from .face_vid.generator import OcclusionAwareSPADEGenerator
-from .face_vid.keypoint_detector import KPDetector, HEEstimator
-from .face_vid.animate import normalize_kp
-from .face_vid.face_extractor import face_extractor
+from app.cycle_gan.model import GeneratorResNet
+from app.face_vid.replicate import DataParallelWithCallback
+from app.face_vid.generator import OcclusionAwareSPADEGenerator
+from app.face_vid.keypoint_detector import KPDetector, HEEstimator
+from app.face_vid.animate import normalize_kp
+from app.face_vid.face_extractor import face_extractor
 
 matplotlib.use('Agg')
 
@@ -67,7 +67,7 @@ def create_fake_image(img):
     G_AB = GeneratorResNet(input_shape, n_residual_blocks)
     G_AB.to('cpu')
 
-    checkpoint_G_AB = torch.load("app/cycle_gan/pth/G_AB_6.pth.tar", map_location=torch.device('cpu'))
+    checkpoint_G_AB = torch.load("app/cycle_gan/pth/s_6.pth.tar", map_location=torch.device('cpu'))
     G_AB.load_state_dict(checkpoint_G_AB['state_dict'])
     G_AB.eval()
 
@@ -256,50 +256,16 @@ def find_best_frame(source, driving, cpu=False):
             frame_num = i
     return frame_num
 
-# def face_vid_parser():
-#     parser = ArgumentParser()
-#     # parser.add_argument("--config", default='app/face_vid/vox-256.yaml', help="path to config")
-#     parser.add_argument("--checkpoint", default='app/face_vid/pth/00000189-checkpoint.pth.tar',
-#                         help="path to checkpoint to restore")
-#
-#     # parser.add_argument("--driving_video", default='app/face_vid/video_sauce/15.mp4', help="path to driving video")
-#
-#     parser.add_argument("--relative", dest="relative", action="store_true",
-#                         help="use relative or absolute keypoint coordinates")
-#     parser.add_argument("--adapt_scale", dest="adapt_scale", action="store_true",
-#                         help="adapt movement scale based on convex hull of keypoints")
-#
-#     parser.add_argument("--find_best_frame", dest="find_best_frame", action="store_true",
-#                         help="Generate from the frame that is the most alligned with source. (Only for faces, requires face_aligment lib)")
-#
-#     parser.add_argument("--best_frame", dest="best_frame", type=int, default=None,
-#                         help="Set frame to start from.")
-#
-#     # parser.add_argument("--cpu", dest="cpu", action="store_true", help="cpu mode.")
-#
-#     parser.add_argument("--free_view", dest="free_view", action="store_true", help="control head pose")
-#     parser.add_argument("--yaw", dest="yaw", type=int, default=None, help="yaw")
-#     parser.add_argument("--pitch", dest="pitch", type=int, default=None, help="pitch")
-#     parser.add_argument("--roll", dest="roll", type=int, default=None, help="roll")
-#
-#     parser.set_defaults(relative=False)
-#     parser.set_defaults(adapt_scale=False)
-#     parser.set_defaults(free_view=False)
-#
-#     opt = parser.parse_args()
-#     return opt
 
-def create_fake_img_and_vid(img):
+async def create_fake_img_and_vid(img) ->str:
     create_repository()
     file_name = img[img.rfind('/') + 1:]
 
     img = face_extractor(img) # 추출된 이미지는 512px
     img = create_fake_image(img)
 
-    # opt = face_vid_parser()
-
     source_image = img
-    reader = imageio.get_reader('app/face_vid/video_sauce/15.mp4')
+    reader = imageio.get_reader('app/face_vid/video_sauce/1515_1.mp4')
     fps = reader.get_meta_data()['fps']
     driving_video = []
     try:
@@ -351,14 +317,12 @@ def create_fake_img_and_vid(img):
 
     result_vid_name = 'result_gan_vid/fake_%s.mp4' % file_name
 
-    # a = [img_as_ubyte(frame) for frame in predictions] # 영상 프레임들을 리스트로 저장
-    # imageio.v2.mimsave(result_vid_name, a, fps=fps) # 원본 사이즈 그대로 mp4 생성
-
-
     imageio.v2.mimsave(result_vid_name, [img_as_ubyte(vid_size_and_resolution_up(frame)) for frame in predictions], fps=fps) # 512로 리사이즈
 
-
     sys.stdout.write('\r가짜 이미지와 영상 생성이 완료 되었습니다.')
+
+    name = 'fake_%s.mp4' % file_name
+    return os.path.basename(name)
 
 # 영상 사이즈, 해상도 향상
 def vid_size_and_resolution_up(frame):
@@ -368,7 +332,9 @@ def vid_size_and_resolution_up(frame):
 # if __name__ == '__main__':
     # img = "./user_image/kimgoeun.jpg"
     # create_fake_img_and_vid(img)
-    # os.rmdir('result_gan_vid') # 디렉토리 사제
-    # shutil.rmtree('user_image') # 디렉토리와 내부 파일 삭제
+    # shutil.rmtree('result_gan_vid') # 디렉토리와 내부 파일 삭제
     # 디렉 생성안됨 -> 이미지 저장 시도 해보기
     # os.mkdir('user_image')  # 디렉토리 생성
+    # rm -f 파일명 # 파일삭제
+    # rm -r 폴더명 # 파일삭제
+
